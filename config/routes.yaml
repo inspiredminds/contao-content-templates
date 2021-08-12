@@ -1,0 +1,3 @@
+contao_address_verification.controller:
+    resource: ../src/Controller
+    type: annotation

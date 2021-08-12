@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+    
+    InspiredMinds\ContaoContentTemplates\:
+        resource: ../src
+        exclude: ../src/{ContaoManager,Event,Model,Resources}
+
+    InspiredMinds\ContaoContentTemplates\Controller\Backend\:
+        resource: ../src/Controller/Backend
+        tags: ['controller.service_arguments']

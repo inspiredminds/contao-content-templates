@@ -1,0 +1,45 @@
+{
+    "name": "inspiredminds/contao-content-templates",
+    "description": "Contao extension to provide an address verification module.",
+    "type": "contao-bundle",
+    "homepage": "https://github.com/inspiredminds/contao-content-templates",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Fritz Michael Gschwantner",
+            "homepage": "http://www.inspiredminds.at",
+            "email": "fmg@inspiredminds.at",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/inspiredminds/contao-content-templates/issues",
+        "source": "https://github.com/inspiredminds/contao-content-templates"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/fritzmg"
+        }
+    ],
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "contao/core-bundle": "^4.9",
+        "symfony/config": "^4.4 || ^5.2",
+        "symfony/dependency-injection": "^4.4 || ^5.2",
+        "symfony/http-foundation": "^4.4 || ^5.2",
+        "symfony/http-kernel": "^4.4 || ^5.2",
+        "symfony/routing": "^4.4 || ^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "InspiredMinds\\ContaoContentTemplates\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "InspiredMinds\\ContaoContentTemplates\\ContaoManager\\Plugin"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16"
+    }
+}
