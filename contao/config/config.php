@@ -13,7 +13,7 @@ declare(strict_types=1);
 use InspiredMinds\ContaoContentTemplates\Model\ContentTemplateModel;
 
 $GLOBALS['BE_MOD']['content']['content_templates'] = [
-    'tables' => ['tl_content_template', 'tl_content'],
+    'tables' => ['tl_content_template', 'tl_content_template_article', 'tl_content'],
     'table' => &$GLOBALS['BE_MOD']['content']['article']['table'],
     'list' => &$GLOBALS['BE_MOD']['content']['article']['list'],
 ];
