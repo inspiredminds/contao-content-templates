@@ -1,6 +1,6 @@
 {
     "name": "inspiredminds/contao-content-templates",
-    "description": "Contao extension to provide an address verification module.",
+    "description": "Contao extension that allows you to define content templates for your page content.",
     "type": "contao-bundle",
     "homepage": "https://github.com/inspiredminds/contao-content-templates",
     "license": "LGPL-3.0-or-later",
