@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 use Contao\Controller;
+use Contao\Image;
 
 Controller::loadDataContainer('tl_article');
 
@@ -25,6 +26,6 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
     'headerFields' => ['name'],
     'panelLayout' => 'search,limit',
     'child_record_callback' => function (array $row) {
-        return '<div class="tl_content_left">'.$row['title'].'</div>';
+        return '<div class="tl_content_left">'.Image::getHtml('article.svg').' '.$row['title'].'</div>';
     },
 ];

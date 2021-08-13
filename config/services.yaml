@@ -7,6 +7,7 @@ services:
         resource: ../src
         exclude: ../src/{ContaoManager,Event,Model,Resources}
 
-    InspiredMinds\ContaoContentTemplates\Controller\Backend\:
-        resource: ../src/Controller/Backend
+    InspiredMinds\ContaoContentTemplates\Controller\:
+        resource: ../src/Controller
+        exclude: ../src/{ContentElement,FrontendModule}
         tags: ['controller.service_arguments']

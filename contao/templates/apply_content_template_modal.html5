@@ -1,0 +1,17 @@
+<script>
+  document.querySelectorAll('.apply-content-template-button').forEach(function(button){
+    const applyUrl = button.dataset.apply;
+    button.addEventListener('click', function(e){
+      e.preventDefault();
+      Backend.openModalSelector({
+        "id": "tl_listing",
+        "title": "<?= $this->trans('tl_content_template', [], 'contao_modules') ?>",
+        "url": this.href,
+        "callback": function(table, value) {
+          window.location = applyUrl+'/'+value[0];
+        }
+      });
+      return false;
+    });
+  });
+</script>
