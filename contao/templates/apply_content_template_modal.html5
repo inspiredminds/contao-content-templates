@@ -5,7 +5,7 @@
       e.preventDefault();
       Backend.openModalSelector({
         "id": "tl_listing",
-        "title": "<?= $this->trans('tl_content_template', [], 'contao_modules') ?>",
+        "title": "<?= $this->trans('Choose a content template', [], 'messages') ?>",
         "url": this.href,
         "callback": function(table, value) {
           window.location = applyUrl+'/'+value[0];
