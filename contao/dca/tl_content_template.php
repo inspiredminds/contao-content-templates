@@ -10,6 +10,8 @@ declare(strict_types=1);
  * @license LGPL-3.0-or-later
  */
 
+use Contao\Image;
+
 $GLOBALS['TL_DCA']['tl_content_template'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -34,6 +36,9 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
         'label' => [
             'fields' => ['name'],
             'format' => '%s',
+            'label_callback' => function (array $row, string $label) {
+                return Image::getHtml('regular.svg', '', 'style="vertical-align: text-bottom"').' '.$label;
+            },
         ],
         'operations' => [
             'edit' => [

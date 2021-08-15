@@ -2,6 +2,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $copyProperties: '%contao_content_templates.copy_properties%'
     
     InspiredMinds\ContaoContentTemplates\:
         resource: ../src

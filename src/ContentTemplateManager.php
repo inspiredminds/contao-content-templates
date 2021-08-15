@@ -14,19 +14,24 @@ namespace InspiredMinds\ContaoContentTemplates;
 
 use Contao\ArticleModel;
 use Contao\ContentModel;
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Model;
 use Contao\PageModel;
+use Contao\Versions;
 use InspiredMinds\ContaoContentTemplates\Model\ContentTemplateArticleModel;
 use InspiredMinds\ContaoContentTemplates\Model\ContentTemplateModel;
 
 class ContentTemplateManager
 {
     private $framework;
+    private $copyProperties;
     private $mappedElements = [];
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(ContaoFramework $framework, array $copyProperties)
     {
         $this->framework = $framework;
+        $this->copyProperties = $copyProperties;
     }
 
     public function applyContentTemplate(int $pageId, int $templateId): void
@@ -49,8 +54,10 @@ class ContentTemplateManager
         foreach ($templateArticles as $templateArticle) {
             $targetArticle = $this->getTargetArticle($pageId, $templateArticle);
 
-            // TODO: update settings
+            // Update the properties of the target article
+            $this->updateProperties($templateArticle, $targetArticle);
 
+            // Update the content elements of the article
             $this->updateContentElements($templateArticle, $targetArticle);
         }
     }
@@ -59,14 +66,14 @@ class ContentTemplateManager
     {
         // Search by source ID
         $targetArticle = ArticleModel::findOneBy(
-            ['pid = ?', 'content_template_source = ?'], 
+            ['pid = ?', 'content_template_source = ?'],
             [$pageId, $templateArticle->id]
         );
 
         // Search by alias and column
         if (null === $targetArticle) {
             $targetArticle = ArticleModel::findOneBy(
-                ['alias = ?', 'pid = ?', 'inColumn = ?'], 
+                ['alias = ?', 'pid = ?', 'inColumn = ?'],
                 [$templateArticle->alias, $pageId, $templateArticle->inColumn]
             );
 
@@ -94,8 +101,8 @@ class ContentTemplateManager
     {
         // Get the content elements of the template
         $templateElements = ContentModel::findBy(
-            ['pid = ?', 'ptable = ?'], 
-            [$templateArticle->id, $templateArticle->getTable()], 
+            ['pid = ?', 'ptable = ?'],
+            [$templateArticle->id, $templateArticle->getTable()],
             ['order' => 'sorting ASC']
         );
 
@@ -103,12 +110,14 @@ class ContentTemplateManager
             return;
         }
 
+        // Reset the already mapped elements
         $this->mappedElements = [];
 
         foreach ($templateElements as $templateElement) {
             $targetElement = $this->getTargetElement($targetArticle, $templateElement);
 
-            // TODO: update settings
+            // Update the properties of the target element
+            $this->updateProperties($templateElement, $targetElement);
         }
     }
 
@@ -116,7 +125,7 @@ class ContentTemplateManager
     {
         // Search by source ID
         $targetElement = ContentModel::findOneBy(
-            ['pid = ?', 'ptable = ?', 'content_template_source = ?'], 
+            ['pid = ?', 'ptable = ?', 'content_template_source = ?'],
             [$targetArticle->id, $targetArticle->getTable(), $templateElement->id]
         );
 
@@ -155,5 +164,37 @@ class ContentTemplateManager
         $this->mappedElements[] = (int) $targetElement->id;
 
         return $targetElement;
+    }
+
+    private function updateProperties(Model $source, Model $target): void
+    {
+        $table = $target->getTable();
+
+        if (empty($this->copyProperties[$table])) {
+            return;
+        }
+
+        Controller::loadDataContainer($table);
+
+        $version = new Versions($target->getTable(), $target->id);
+        $version->initialize();
+        $createVersion = false;
+
+        foreach ($this->copyProperties[$table] as $prop) {
+            if (!empty($GLOBALS['TL_DCA'][$table]['fields'][$prop])) {
+                $target->{$prop} = $source->{$prop};
+            }
+        }
+
+        if ($target->isModified()) {
+            $target->tstamp = time();
+            $createVersion = true;
+        }
+
+        $target->save();
+
+        if ($createVersion) {
+            $version->create();
+        }
     }
 }

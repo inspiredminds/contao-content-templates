@@ -23,5 +23,12 @@ class ContaoContentTemplatesExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.yaml');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('contao_content_templates.copy_properties', $config['copy_properties']);
+        $container->setParameter('contao_content_templates.copy_properties.tl_article', $config['copy_properties']['tl_article']);
+        $container->setParameter('contao_content_templates.copy_properties.tl_content', $config['copy_properties']['tl_content']);
     }
 }
