@@ -11,11 +11,20 @@ The extension also allows you to re-apply a content template again to a site. Th
 
 Within the site structure in the back end, there will be a new global operation called _Apply content template_. When activated, you will have to opportunity to select a regular page in your site structure to which you want to apply a content template to. Once a page has been selected, a pop-up will show allowing you to select the content template. The conent template will be applied after confirming the selection.
 
+By default any previously existing articles will remain in the target page. However, if you want to automatically delete _empty_ articles in the target, the following option can be enabled in the bundle configuration:
+
+```yaml
+# config/config.yaml
+contao_content_templates:
+    delete_empty_articles: true
+```
+
 ## Re-applying Content Templates
 
 This works the same way as applying content templates. However, if you want the properties of articles or content templates to be updated with the properties of the source template, you first need to explicitly define which properties should be taken into account. This can be done via the bundle configuration. For example:
 
 ```yaml
+# config/config.yaml
 contao_content_templates:
     copy_properties:
         tl_article:

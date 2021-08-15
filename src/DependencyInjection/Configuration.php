@@ -23,6 +23,10 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
             ->children()
+                ->booleanNode('delete_empty_articles')
+                    ->info('Whether to automatically delete any empty articles in the target page when applying a template.')
+                    ->defaultFalse()
+                ->end()
                 ->arrayNode('copy_properties')
                     ->info('Properties to copy when re-applying a content template.')
                     ->children()

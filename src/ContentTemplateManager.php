@@ -26,12 +26,14 @@ class ContentTemplateManager
 {
     private $framework;
     private $copyProperties;
+    private $deleteEmptyArticles;
     private $mappedElements = [];
 
-    public function __construct(ContaoFramework $framework, array $copyProperties)
+    public function __construct(ContaoFramework $framework, array $copyProperties, bool $deleteEmptyArticles)
     {
         $this->framework = $framework;
         $this->copyProperties = $copyProperties;
+        $this->deleteEmptyArticles = $deleteEmptyArticles;
     }
 
     public function applyContentTemplate(int $pageId, int $templateId): void
@@ -49,6 +51,17 @@ class ContentTemplateManager
 
         if (null === $templateArticles) {
             return;
+        }
+
+        // Delete any empty target articles
+        if ($this->deleteEmptyArticles) {
+            $targetArticles = ArticleModel::findBy(['pid = ?'], [$pageId]);
+
+            foreach ($targetArticles as $targetArticle) {
+                if (null === ContentModel::findBy(['pid = ?', 'ptable = ?'], [$targetArticle->id, $targetArticle->getTable()])) {
+                    $targetArticle->delete();
+                }
+            }
         }
 
         foreach ($templateArticles as $templateArticle) {

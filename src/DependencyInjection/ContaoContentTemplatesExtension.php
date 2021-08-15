@@ -27,6 +27,7 @@ class ContaoContentTemplatesExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('contao_content_templates.delete_empty_articles', $config['delete_empty_articles']);
         $container->setParameter('contao_content_templates.copy_properties', $config['copy_properties']);
         $container->setParameter('contao_content_templates.copy_properties.tl_article', $config['copy_properties']['tl_article']);
         $container->setParameter('contao_content_templates.copy_properties.tl_content', $config['copy_properties']['tl_content']);

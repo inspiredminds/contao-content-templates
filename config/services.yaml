@@ -4,6 +4,7 @@ services:
         autoconfigure: true
         bind:
             $copyProperties: '%contao_content_templates.copy_properties%'
+            $deleteEmptyArticles: '%contao_content_templates.delete_empty_articles%'
     
     InspiredMinds\ContaoContentTemplates\:
         resource: ../src
