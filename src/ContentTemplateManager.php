@@ -46,13 +46,13 @@ class ContentTemplateManager
         }
 
         foreach ($templateArticles as $templateArticle) {
-            $targetArticle = ArticleModel::findOneByUuid($templateArticle->uuid);
+            $targetArticle = ArticleModel::findOneBy(['pid = ?', 'content_template_source = ?'], [$pageId, $templateArticle->id]);
 
             if (null === $targetArticle) {
                 $targetArticle = ArticleModel::findOneBy(['alias = ?', 'pid = ?', 'inColumn = ?'], [$templateArticle->alias, $pageId, $templateArticle->inColumn]);
 
                 if (null !== $targetArticle) {
-                    $targetArticle->uuid = $templateArticle->uuid;
+                    $targetArticle->content_template_source = $templateArticle->id;
                     $targetArticle->save();
                 }
             }
@@ -77,7 +77,10 @@ class ContentTemplateManager
             $mappedElements = [];
 
             foreach ($templateElements as $templateElement) {
-                $targetElement = ContentModel::findOneBy(['pid = ?', 'uuid = ?'], [$targetArticle->getTable(), $templateElement->uuid]);
+                $targetElement = ContentModel::findOneBy(
+                    ['pid = ?', 'ptable = ?', 'content_template_source = ?'], 
+                    [$targetArticle->id, $targetArticle->getTable(), $templateElement->id]
+                );
 
                 if (null === $targetElement) {
                     $targetCandidates = ContentModel::findBy(
@@ -92,7 +95,7 @@ class ContentTemplateManager
                         }
 
                         $targetElement = $targetCandidate;
-                        $targetElement->uuid = $templateElement->uuid;
+                        $targetElement->content_template_source = $templateElement->id;
                         $targetElement->save();
                         break;
                     }
