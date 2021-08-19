@@ -32,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
     },
 ];
 
-$GLOBALS['TL_DCA']['tl_content_template_article']['fields']['alias']['save_callback'] = function ($value, DataContainer $dc) {
+$GLOBALS['TL_DCA']['tl_content_template_article']['fields']['alias']['save_callback'] = [function ($value, DataContainer $dc) {
     $aliasExists = function (string $alias) use ($dc): bool {
         return
             $this->Database->prepare('SELECT id FROM tl_article WHERE alias=? AND content_template_source!=?')->execute($alias, $dc->id)->numRows > 0 &&
@@ -50,4 +50,4 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['fields']['alias']['save_callb
     }
 
     return $value;
-};
+}];
