@@ -34,9 +34,12 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
 
 $GLOBALS['TL_DCA']['tl_content_template_article']['fields']['alias']['save_callback'] = [function ($value, DataContainer $dc) {
     $aliasExists = function (string $alias) use ($dc): bool {
+        /** @var \Doctrine\DBAL\Connection $db */
+        $db = System::getContainer()->get('database_connection');
+
         return
-            $this->Database->prepare('SELECT id FROM tl_article WHERE alias=? AND content_template_source!=?')->execute($alias, $dc->id)->numRows > 0 &&
-            $this->Database->prepare('SELECT id FROM tl_content_template_article WHERE alias=? AND id!=?')->execute($alias, $dc->id)->numRows > 0
+            $db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0 &&
+            $db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0
         ;
     };
 
