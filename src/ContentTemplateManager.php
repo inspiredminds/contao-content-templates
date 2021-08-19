@@ -86,7 +86,7 @@ class ContentTemplateManager
         // Search by alias and column
         if (null === $targetArticle) {
             $targetArticle = ArticleModel::findOneBy(
-                ['alias = ?', 'pid = ?', 'inColumn = ?'],
+                ["alias != ''", 'alias = ?', 'pid = ?', 'inColumn = ?'],
                 [$templateArticle->alias, $pageId, $templateArticle->inColumn]
             );
 
