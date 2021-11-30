@@ -11,17 +11,43 @@ declare(strict_types=1);
  */
 
 use Contao\Controller;
-use Contao\DataContainer;
 use Contao\Image;
-use Contao\System;
 
 Controller::loadDataContainer('tl_article');
 
+// Copy the tl_article DCA
 $GLOBALS['TL_DCA']['tl_content_template_article'] = $GLOBALS['TL_DCA']['tl_article'];
 
+// Set the ptable
 $GLOBALS['TL_DCA']['tl_content_template_article']['config']['ptable'] = 'tl_content_template';
-unset($GLOBALS['TL_DCA']['tl_content_template_article']['list']['global_operations']['toggleNodes'], $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['toggle']);
 
+// Remove toggle icons
+unset(
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['global_operations']['toggleNodes'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['toggle'],
+);
+
+// Remove the tl_article::checkPermission onload_callback
+$callbacks = [];
+
+foreach ($GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] as $callback) {
+    if (\is_array($callback) && 'tl_article' === $callback[0] && 'checkPermission' === $callback[1]) {
+        continue;
+    }
+
+    $callbacks[] = $callback;
+}
+
+$GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] = $callbacks;
+
+// Unset some callbacks (no permission check)
+unset(
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['edit']['button_callback'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['copy']['button_callback'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['cut']['button_callback']
+);
+
+// Configure list sorting
 $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
     'mode' => 4,
     'fields' => ['sorting'],
@@ -31,26 +57,3 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
         return '<div class="tl_content_left">'.Image::getHtml('article.svg', '', 'style="vertical-align: text-bottom"').' '.$row['title'].'</div>';
     },
 ];
-
-$GLOBALS['TL_DCA']['tl_content_template_article']['fields']['alias']['save_callback'] = [function ($value, DataContainer $dc) {
-    $aliasExists = function (string $alias) use ($dc): bool {
-        /** @var \Doctrine\DBAL\Connection $db */
-        $db = System::getContainer()->get('database_connection');
-
-        return
-            $db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0 &&
-            $db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0
-        ;
-    };
-
-    // Generate an alias if there is none
-    if (!$value) {
-        $value = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, $dc->activeRecord->pid, $aliasExists);
-    } elseif (preg_match('/^[1-9]\d*$/', $value)) {
-        throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
-    } elseif ($aliasExists($value)) {
-        throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
-    }
-
-    return $value;
-}];
