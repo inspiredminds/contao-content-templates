@@ -44,7 +44,8 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] =
 unset(
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['edit']['button_callback'],
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['copy']['button_callback'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['cut']['button_callback']
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['cut']['button_callback'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['delete']['button_callback']
 );
 
 // Configure list sorting
