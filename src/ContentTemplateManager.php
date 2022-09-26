@@ -65,7 +65,7 @@ class ContentTemplateManager
         }
 
         foreach ($templateArticles as $templateArticle) {
-            $targetArticle = $this->getTargetArticle($pageId, $templateArticle);
+            $targetArticle = $this->getTargetArticle($pageId, $templateArticle, (bool) $template->disable_mapping);
 
             // Update the properties of the target article
             $this->updateProperties($templateArticle, $targetArticle);
@@ -75,24 +75,28 @@ class ContentTemplateManager
         }
     }
 
-    private function getTargetArticle(int $pageId, ContentTemplateArticleModel $templateArticle): ArticleModel
+    private function getTargetArticle(int $pageId, ContentTemplateArticleModel $templateArticle, bool $disableMapping = false): ArticleModel
     {
-        // Search by source ID
-        $targetArticle = ArticleModel::findOneBy(
-            ['pid = ?', 'content_template_source = ?'],
-            [$pageId, $templateArticle->id]
-        );
+        $targetArticle = null;
 
-        // Search by alias and column
-        if (null === $targetArticle) {
+        if (!$disableMapping) {
+            // Search by source ID
             $targetArticle = ArticleModel::findOneBy(
-                ["alias != ''", 'alias = ?', 'pid = ?', 'inColumn = ?'],
-                [$templateArticle->alias, $pageId, $templateArticle->inColumn]
+                ['pid = ?', 'content_template_source = ?'],
+                [$pageId, $templateArticle->id]
             );
 
-            if (null !== $targetArticle) {
-                $targetArticle->content_template_source = $templateArticle->id;
-                $targetArticle->save();
+            // Search by alias and column
+            if (null === $targetArticle) {
+                $targetArticle = ArticleModel::findOneBy(
+                    ["alias != ''", 'alias = ?', 'pid = ?', 'inColumn = ?'],
+                    [$templateArticle->alias, $pageId, $templateArticle->inColumn]
+                );
+
+                if (null !== $targetArticle) {
+                    $targetArticle->content_template_source = $templateArticle->id;
+                    $targetArticle->save();
+                }
             }
         }
 
@@ -102,8 +106,22 @@ class ContentTemplateManager
             $row = $templateArticle->row();
             unset($row[ArticleModel::getPk()]);
             $targetArticle->setRow($row);
+            $targetArticle->tstamp = time();
             $targetArticle->pid = $pageId;
             $targetArticle->content_template_source = $templateArticle->id;
+
+            // Adjust sorting
+            $maxSort = 0;
+            foreach (ArticleModel::findByPid($pageId) ?? [] as $otherArticle) {
+                if ((int) $otherArticle->sorting > $maxSort) {
+                    $maxSort = (int) $otherArticle->sorting;
+                }
+            }
+
+            if ($maxSort > 0) {
+                $targetArticle->sorting = $maxSort + 64;
+            }
+
             $targetArticle->save();
         }
 

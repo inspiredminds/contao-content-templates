@@ -61,7 +61,7 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
     ],
 
     'palettes' => [
-        'default' => '{content_template_legend},name',
+        'default' => '{content_template_legend},name,disable_mapping',
     ],
 
     'fields' => [
@@ -77,6 +77,13 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
+        ],
+        'disable_mapping' => [
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'm12'],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],
 ];

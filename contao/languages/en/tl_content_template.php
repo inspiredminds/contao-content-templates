@@ -11,5 +11,6 @@ declare(strict_types=1);
  */
 
 $GLOBALS['TL_LANG']['tl_content_template']['name'] = ['Name', 'Name of the content template.'];
+$GLOBALS['TL_LANG']['tl_content_template']['disable_mapping'] = ['Disable mapping', 'Disables the automatic mapping to existing articles and always appends the content template to the page.'];
 $GLOBALS['TL_LANG']['tl_content_template']['edit'] = ['Edit content template ID %s', 'Edit content template ID %s'];
 $GLOBALS['TL_LANG']['tl_content_template']['content_template_legend'] = 'Content template';

@@ -14,6 +14,11 @@ namespace InspiredMinds\ContaoContentTemplates\Model;
 
 use Contao\Model;
 
+/**
+ * @property int    $id
+ * @property string $name
+ * @property bool   $disable_mapping
+ */
 class ContentTemplateModel extends Model
 {
     public const TYPE_CONTENT = 'article';
