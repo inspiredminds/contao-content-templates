@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
-use Contao\BackendTemplate;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
@@ -22,6 +21,7 @@ use Contao\StringUtil;
 use InspiredMinds\ContaoContentTemplates\Controller\ApplyContentTemplateController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Callback(table="tl_page", target="config.onload")
@@ -31,12 +31,14 @@ class AdjustPageOperationsListener
     private $router;
     private $requestStack;
     private $pickerBuilder;
+    private $translator;
 
-    public function __construct(RouterInterface $router, RequestStack $requestStack, PickerBuilderInterface $pickerBuilder)
+    public function __construct(RouterInterface $router, RequestStack $requestStack, PickerBuilderInterface $pickerBuilder, TranslatorInterface $translator)
     {
         $this->router = $router;
         $this->requestStack = $requestStack;
         $this->pickerBuilder = $pickerBuilder;
+        $this->translator = $translator;
     }
 
     public function __invoke(DataContainer $dc): void
@@ -61,7 +63,7 @@ class AdjustPageOperationsListener
                         'source' => 'tl_page.'.$row['id'],
                     ]);
 
-                    return '<a class="apply-content-template-button" href="'.$href.'" title="'.StringUtil::specialchars($title).'"'.$attributes.' data-apply="'.$applyUrl.'">'.Image::getHtml($icon, $label).'</a> ';
+                    return '<a class="content-templates-modal" href="'.$href.'" title="'.StringUtil::specialchars($title).'"'.$attributes.' data-apply="'.$applyUrl.'" data-title="'.$this->translator->trans('Choose a content template').'">'.Image::getHtml($icon, $label).'</a> ';
                 },
             ],
         ];
@@ -85,6 +87,6 @@ class AdjustPageOperationsListener
             ],
         ];
 
-        $GLOBALS['TL_MOOTOOLS'][] = (new BackendTemplate('apply_content_template_modal'))->parse();
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaocontenttemplates/content-templates-modal.js|async';
     }
 }

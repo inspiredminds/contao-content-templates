@@ -75,6 +75,42 @@ class ContentTemplateManager
         }
     }
 
+    public function createContentTemplateFromPage(int $pageId): void
+    {
+        $this->framework->initialize();
+
+        $page = PageModel::findByPk($pageId);
+
+        if (null === $page) {
+            throw new \RuntimeException('Invalid page.');
+        }
+
+        $template = new ContentTemplateModel();
+        $template->name = $page->title;
+        $template->tstamp = time();
+        $template->save();
+
+        foreach (ArticleModel::findByPid($pageId) ?? [] as $pageArticle) {
+            $pageArticleData = $pageArticle->row();
+            unset($pageArticleData['id']);
+
+            $templateArticle = new ContentTemplateArticleModel();
+            $templateArticle->setRow($pageArticleData);
+            $templateArticle->pid = $template->id;
+            $templateArticle->save();
+
+            $pageElements = ContentModel::findBy(['pid = ?', 'ptable = ?'], [(int) $pageArticle->id, $pageArticle->getTable()]);
+
+            /** @var ContentModel $pageElement */
+            foreach ($pageElements ?? [] as $pageElement) {
+                $templateElement = clone $pageElement;
+                $templateElement->ptable = $templateArticle->getTable();
+                $templateElement->pid = (int) $templateArticle->id;
+                $templateElement->save();
+            }
+        }
+    }
+
     private function getTargetArticle(int $pageId, ContentTemplateArticleModel $templateArticle, bool $disableMapping = false): ArticleModel
     {
         $targetArticle = null;
