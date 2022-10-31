@@ -14,6 +14,7 @@ namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
 use Contao\Backend;
 use Contao\BackendUser;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\CoreBundle\Slug\Slug;
 use Contao\DataContainer;
@@ -67,8 +68,16 @@ class ContentTemplateArticleListener
      */
     public function onListOperationsEditButtonCallback(array $row, ?string $href, string $label, string $title, ?string $icon, string $attributes): string
     {
-        if (!$this->getUser()->canEditFieldsOf('tl_content_template_article')) {
-            return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        $user = $this->getUser();
+
+        if (method_exists($user, 'canEditFieldsOf')) {
+            if (!$user->canEditFieldsOf('tl_content_template_article')) {
+                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+            }
+        } else {
+            if (!$this->security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_content_template_article')) {
+                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+            }
         }
 
         return $this->getButton($row, $href, $label, $title, $icon, $attributes);
