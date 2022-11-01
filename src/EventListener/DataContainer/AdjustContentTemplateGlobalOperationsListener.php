@@ -42,6 +42,10 @@ class AdjustContentTemplateGlobalOperationsListener
 
         $applyUrl = $this->router->generate(CreateContentTemplateFromPageController::class);
 
+        if (!isset($op['attributes'])) {
+            $op['attributes'] = '';
+        }
+
         $op['attributes'] .= ' data-apply="'.$applyUrl.'"';
         $op['attributes'] .= ' data-title="'.$this->translator->trans('Choose a page').'"';
 

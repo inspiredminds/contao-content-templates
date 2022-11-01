@@ -10,9 +10,11 @@ declare(strict_types=1);
  * @license LGPL-3.0-or-later
  */
 
+use Contao\DC_Table;
+
 $GLOBALS['TL_DCA']['tl_content_template'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ctable' => ['tl_content_template_article'],
         'enableVersioning' => true,
         'switchToEdit' => true,
