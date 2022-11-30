@@ -85,7 +85,7 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
-            'eval' => ['tl_class' => 'm12'],
+            'eval' => ['tl_class' => 'w50 m12'],
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],
