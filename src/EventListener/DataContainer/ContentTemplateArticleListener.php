@@ -46,9 +46,8 @@ class ContentTemplateArticleListener
     {
         $aliasExists = function (string $alias) use ($dc): bool {
             return
-                $this->db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0 &&
-                $this->db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0
-            ;
+                $this->db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0
+                && $this->db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0;
         };
 
         // Generate an alias if there is none

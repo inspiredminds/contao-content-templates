@@ -27,11 +27,16 @@ unset(
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['toggle'],
 );
 
-// Remove the tl_article::checkPermission onload_callback
+// Only allow core callbacks (without tl_article::checkPermission)
+$allowedOnloadCallbacks = [
+    ['tl_article', 'checkPermission'],
+    ['tl_article', 'addCustomLayoutSectionReferences'],
+];
+
 $callbacks = [];
 
 foreach ($GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] as $callback) {
-    if (\is_array($callback) && 'tl_article' === $callback[0] && 'checkPermission' === $callback[1]) {
+    if (\is_array($callback) && !\in_array($callback, $allowedOnloadCallbacks, true)) {
         continue;
     }
 
@@ -58,3 +63,6 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
         return '<div class="tl_content_left">'.Image::getHtml('article.svg', '', 'style="vertical-align: text-bottom"').' '.$row['title'].'</div>';
     },
 ];
+
+// Added via loadDataContainer
+unset($GLOBALS['TL_DCA']['tl_content_template_article']['config']['ondelete_callback']);

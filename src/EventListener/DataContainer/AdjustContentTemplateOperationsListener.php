@@ -39,7 +39,7 @@ class AdjustContentTemplateOperationsListener
 
         $pickerConfig = PickerConfig::urlDecode($request->query->get('picker'));
 
-        if (0 !== strpos($pickerConfig->getExtra('source'), 'tl_page.')) {
+        if (!str_starts_with($pickerConfig->getExtra('source'), 'tl_page.')) {
             return;
         }
 
