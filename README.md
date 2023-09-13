@@ -9,7 +9,7 @@ The extension also allows you to re-apply a content template again to a site. Th
 
 ## Applying Content Templates
 
-Within the site structure in the back end, there will be a new global operation called _Apply content template_. When activated, you will have the opportunity to select a regular page in your site structure to which you want to apply a content template to. Once a page has been selected, a pop-up will show allowing you to select the content template. The conent template will be applied after confirming the selection.
+Within the site structure in the back end, there will be a new global operation called _Apply content template_. When activated you will have the opportunity to select a regular page in your site structure to which you want to apply a content template to. Once a page has been selected a pop-up will show allowing you to select the content template. The content template will be applied after confirming the selection.
 
 By default any previously existing articles will remain in the target page. However, if you want to automatically delete _empty_ articles in the target, the following option can be enabled in the bundle configuration:
 
