@@ -8,4 +8,4 @@ services:
     
     InspiredMinds\ContaoContentTemplates\:
         resource: ../src
-        exclude: ../src/{ContaoManager,DependencyInjection,Event,Model}
+        exclude: ../src/{ContaoManager,DependencyInjection,Event,Model,ContaoContentTemplatesBundle.php}
