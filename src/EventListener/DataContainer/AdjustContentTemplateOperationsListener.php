@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Contao Content Templates extension.
- *
- * (c) inspiredminds
- *
- * @license LGPL-3.0-or-later
+ * (c) INSPIRED MINDS
  */
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
@@ -22,11 +18,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class AdjustContentTemplateOperationsListener
 {
-    private $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(private readonly RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
     public function __invoke(DataContainer $dc): void
@@ -39,7 +32,7 @@ class AdjustContentTemplateOperationsListener
 
         $pickerConfig = PickerConfig::urlDecode($request->query->get('picker'));
 
-        if (!str_starts_with($pickerConfig->getExtra('source'), 'tl_page.')) {
+        if (!str_starts_with((string) $pickerConfig->getExtra('source'), 'tl_page.')) {
             return;
         }
 

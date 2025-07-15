@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Contao Content Templates extension.
- *
- * (c) inspiredminds
- *
- * @license LGPL-3.0-or-later
+ * (c) INSPIRED MINDS
  */
 
 namespace InspiredMinds\ContaoContentTemplates;
@@ -24,24 +20,21 @@ use InspiredMinds\ContaoContentTemplates\Model\ContentTemplateModel;
 
 class ContentTemplateManager
 {
-    private $framework;
-    private $copyProperties;
-    private $deleteEmptyArticles;
     private $mappedElements = [];
 
-    public function __construct(ContaoFramework $framework, array $copyProperties, bool $deleteEmptyArticles)
-    {
-        $this->framework = $framework;
-        $this->copyProperties = $copyProperties;
-        $this->deleteEmptyArticles = $deleteEmptyArticles;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private array $copyProperties,
+        private readonly bool $deleteEmptyArticles,
+    ) {
     }
 
     public function applyContentTemplate(int $pageId, int $templateId): void
     {
         $this->framework->initialize();
 
-        $page = PageModel::findByPk($pageId);
-        $template = ContentTemplateModel::findByPk($templateId);
+        $page = PageModel::findById($pageId);
+        $template = ContentTemplateModel::findById($templateId);
 
         if (null === $page || null === $template) {
             throw new \RuntimeException('Invalid page or template.');
@@ -79,7 +72,7 @@ class ContentTemplateManager
     {
         $this->framework->initialize();
 
-        $page = PageModel::findByPk($pageId);
+        $page = PageModel::findById($pageId);
 
         if (null === $page) {
             throw new \RuntimeException('Invalid page.');
@@ -119,14 +112,14 @@ class ContentTemplateManager
             // Search by source ID
             $targetArticle = ArticleModel::findOneBy(
                 ['pid = ?', 'content_template_source = ?'],
-                [$pageId, $templateArticle->id]
+                [$pageId, $templateArticle->id],
             );
 
             // Search by alias and column
             if (null === $targetArticle) {
                 $targetArticle = ArticleModel::findOneBy(
                     ["alias != ''", 'alias = ?', 'pid = ?', 'inColumn = ?'],
-                    [$templateArticle->alias, $pageId, $templateArticle->inColumn]
+                    [$templateArticle->alias, $pageId, $templateArticle->inColumn],
                 );
 
                 if (null !== $targetArticle) {
@@ -148,6 +141,7 @@ class ContentTemplateManager
 
             // Adjust sorting
             $maxSort = 0;
+
             foreach (ArticleModel::findByPid($pageId) ?? [] as $otherArticle) {
                 if ((int) $otherArticle->sorting > $maxSort) {
                     $maxSort = (int) $otherArticle->sorting;
@@ -170,7 +164,7 @@ class ContentTemplateManager
         $templateElements = ContentModel::findBy(
             ['pid = ?', 'ptable = ?'],
             [$templateArticle->id, $templateArticle->getTable()],
-            ['order' => 'sorting ASC']
+            ['order' => 'sorting ASC'],
         );
 
         if (null === $templateElements) {
@@ -193,7 +187,7 @@ class ContentTemplateManager
         // Search by source ID
         $targetElement = ContentModel::findOneBy(
             ['pid = ?', 'ptable = ?', 'content_template_source = ?'],
-            [$targetArticle->id, $targetArticle->getTable(), $templateElement->id]
+            [$targetArticle->id, $targetArticle->getTable(), $templateElement->id],
         );
 
         // Search by type
@@ -201,7 +195,7 @@ class ContentTemplateManager
             $targetCandidates = ContentModel::findBy(
                 ['pid = ?', 'ptable = ?', 'type = ?'],
                 [$targetArticle->id, $targetArticle->getTable(), $templateElement->type],
-                ['order' => 'sorting ASC']
+                ['order' => 'sorting ASC'],
             );
 
             foreach ($targetCandidates ?? [] as $targetCandidate) {
@@ -245,6 +239,7 @@ class ContentTemplateManager
 
         $version = new Versions($target->getTable(), $target->id);
         $version->initialize();
+
         $createVersion = false;
 
         foreach ($this->copyProperties[$table] as $prop) {

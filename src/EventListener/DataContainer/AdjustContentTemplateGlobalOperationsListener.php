@@ -25,15 +25,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AdjustContentTemplateGlobalOperationsListener
 {
-    private $pickerBuilder;
-    private $translator;
-    private $router;
-
-    public function __construct(PickerBuilderInterface $pickerBuilder, TranslatorInterface $translator, RouterInterface $router)
-    {
-        $this->pickerBuilder = $pickerBuilder;
-        $this->translator = $translator;
-        $this->router = $router;
+    public function __construct(
+        private readonly PickerBuilderInterface $pickerBuilder,
+        private readonly TranslatorInterface $translator,
+        private readonly RouterInterface $router,
+    ) {
     }
 
     public function __invoke(DataContainer $dc): void
@@ -49,7 +45,7 @@ class AdjustContentTemplateGlobalOperationsListener
         $op['attributes'] .= ' data-apply="'.$applyUrl.'"';
         $op['attributes'] .= ' data-title="'.$this->translator->trans('Choose a page').'"';
 
-        $op['button_callback'] = function (?string $href, string $label, string $title, string $class, string $attributes): string {
+        $op['button_callback'] = function (string|null $href, string $label, string $title, string $class, string $attributes): string {
             $href = $this->pickerBuilder->getUrl('dc.tl_page', [
                 'fieldType' => 'radio',
             ]);

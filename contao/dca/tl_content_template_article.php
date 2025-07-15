@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Contao Content Templates extension.
- *
- * (c) inspiredminds
- *
- * @license LGPL-3.0-or-later
+ * (c) INSPIRED MINDS
  */
 
 use Contao\Controller;
@@ -36,7 +32,7 @@ $allowedOnloadCallbacks = [
 $callbacks = [];
 
 foreach ($GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] as $callback) {
-    if (\is_array($callback) && !\in_array($callback, $allowedOnloadCallbacks, true)) {
+    if (is_array($callback) && !in_array($callback, $allowedOnloadCallbacks, true)) {
         continue;
     }
 
@@ -50,7 +46,7 @@ unset(
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['edit']['button_callback'],
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['copy']['button_callback'],
     $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['cut']['button_callback'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['delete']['button_callback']
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['delete']['button_callback'],
 );
 
 // Configure list sorting
@@ -59,9 +55,7 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
     'fields' => ['sorting'],
     'headerFields' => ['name'],
     'panelLayout' => 'search,limit',
-    'child_record_callback' => function (array $row) {
-        return '<div class="tl_content_left">'.Image::getHtml('article.svg', '', 'style="vertical-align: text-bottom"').' '.$row['title'].'</div>';
-    },
+    'child_record_callback' => static fn (array $row) => '<div class="tl_content_left">'.Image::getHtml('article.svg', '', 'style="vertical-align: text-bottom"').' '.$row['title'].'</div>',
 ];
 
 // Added via loadDataContainer

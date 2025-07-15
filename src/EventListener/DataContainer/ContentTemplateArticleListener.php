@@ -28,15 +28,11 @@ use Symfony\Component\Security\Core\Security;
  */
 class ContentTemplateArticleListener
 {
-    private $db;
-    private $slug;
-    private $security;
-
-    public function __construct(Connection $db, Slug $slug, Security $security)
-    {
-        $this->db = $db;
-        $this->slug = $slug;
-        $this->security = $security;
+    public function __construct(
+        private readonly Connection $db,
+        private readonly Slug $slug,
+        private readonly Security $security,
+    ) {
     }
 
     /**
@@ -44,19 +40,16 @@ class ContentTemplateArticleListener
      */
     public function onAliasSaveCallback($value, DataContainer $dc)
     {
-        $aliasExists = function (string $alias) use ($dc): bool {
-            return
-                $this->db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0
-                && $this->db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0;
-        };
+        $aliasExists = (fn (string $alias): bool => $this->db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0
+        && $this->db->fetchOne('SELECT COUNT(id) FROM tl_content_template_article WHERE alias=? AND id!=?', [$alias, $dc->id]) > 0);
 
         // Generate an alias if there is none
         if (!$value) {
             $value = $this->slug->generate($dc->activeRecord->title, $dc->activeRecord->pid, $aliasExists);
-        } elseif (preg_match('/^[1-9]\d*$/', $value)) {
-            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
+        } elseif (preg_match('/^[1-9]\d*$/', (string) $value)) {
+            throw new \Exception(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
         } elseif ($aliasExists($value)) {
-            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
+            throw new \Exception(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
         }
 
         return $value;
@@ -65,17 +58,17 @@ class ContentTemplateArticleListener
     /**
      * @Callback(table="tl_content_template_article", target="list.operations.editheader.button")
      */
-    public function onListOperationsEditButtonCallback(array $row, ?string $href, string $label, string $title, ?string $icon, string $attributes): string
+    public function onListOperationsEditButtonCallback(array $row, string|null $href, string $label, string $title, string|null $icon, string $attributes): string
     {
         $user = $this->getUser();
 
         if (method_exists($user, 'canEditFieldsOf')) {
             if (!$user->canEditFieldsOf('tl_content_template_article')) {
-                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
             }
         } else {
             if (!$this->security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_content_template_article')) {
-                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
             }
         }
 
@@ -87,7 +80,7 @@ class ContentTemplateArticleListener
         return $this->security->getUser();
     }
 
-    private function getButton(array $row, ?string $href, string $label, string $title, ?string $icon, string $attributes): string
+    private function getButton(array $row, string|null $href, string $label, string $title, string|null $icon, string $attributes): string
     {
         return '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
     }

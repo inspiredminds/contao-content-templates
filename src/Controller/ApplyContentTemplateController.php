@@ -27,26 +27,27 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class ApplyContentTemplateController
 {
-    private $router;
-    private $manager;
-
-    public function __construct(RouterInterface $router, ContentTemplateManager $manager)
-    {
-        $this->router = $router;
-        $this->manager = $manager;
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly ContentTemplateManager $manager,
+    ) {
     }
 
-    public function __invoke(Request $request, int $pageId, int $templateId = null): Response
+    public function __invoke(Request $request, int $pageId, int|null $templateId = null): Response
     {
         if (null !== $templateId) {
             $this->manager->applyContentTemplate($pageId, $templateId);
         }
 
-        $redirect = $this->router->generate('contao_backend', [
-            'do' => 'article',
-            'pn' => $pageId,
-            'ref' => $request->attributes->get('_contao_referer_id'),
-        ], RouterInterface::ABSOLUTE_PATH);
+        $redirect = $this->router->generate(
+            'contao_backend',
+            [
+                'do' => 'article',
+                'pn' => $pageId,
+                'ref' => $request->attributes->get('_contao_referer_id'),
+            ],
+            RouterInterface::ABSOLUTE_PATH,
+        );
 
         return new RedirectResponse($redirect);
     }

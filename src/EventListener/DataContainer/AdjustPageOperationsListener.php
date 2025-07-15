@@ -28,17 +28,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AdjustPageOperationsListener
 {
-    private $router;
-    private $requestStack;
-    private $pickerBuilder;
-    private $translator;
-
-    public function __construct(RouterInterface $router, RequestStack $requestStack, PickerBuilderInterface $pickerBuilder, TranslatorInterface $translator)
-    {
-        $this->router = $router;
-        $this->requestStack = $requestStack;
-        $this->pickerBuilder = $pickerBuilder;
-        $this->translator = $translator;
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly RequestStack $requestStack,
+        private readonly PickerBuilderInterface $pickerBuilder,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     public function __invoke(DataContainer $dc): void
@@ -51,7 +46,7 @@ class AdjustPageOperationsListener
         $GLOBALS['TL_DCA']['tl_page']['list']['operations'] = [
             'apply_content_template' => [
                 'icon' => 'pasteinto.svg',
-                'button_callback' => function (array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string {
+                'button_callback' => function (array $row, string|null $href, string $label, string $title, string $icon, string $attributes): string {
                     if ('regular' !== $row['type']) {
                         return '';
                     }
@@ -76,7 +71,7 @@ class AdjustPageOperationsListener
             'cancel_apply_content_template' => [
                 'label' => &$GLOBALS['TL_LANG']['MSC']['cancelBT'],
                 'icon' => 'clipboard.svg',
-                'button_callback' => function (?string $href, string $label, string $title, string $class, string $attributes): string {
+                'button_callback' => function (string|null $href, string $label, string $title, string $class, string $attributes): string {
                     $href = $this->router->generate('contao_backend', [
                         'do' => 'page',
                         'ref' => $this->requestStack->getCurrentRequest()->attributes->get('_contao_referer_id'),
