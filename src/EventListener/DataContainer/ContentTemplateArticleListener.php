@@ -13,15 +13,14 @@ declare(strict_types=1);
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
 use Contao\Backend;
-use Contao\BackendUser;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\CoreBundle\Slug\Slug;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * This service contains all necessary DCA callbacks for tl_content_template_article.
@@ -31,13 +30,11 @@ class ContentTemplateArticleListener
     public function __construct(
         private readonly Connection $db,
         private readonly Slug $slug,
-        private readonly Security $security,
+        private readonly AuthorizationCheckerInterface $authChecker,
     ) {
     }
 
-    /**
-     * @Callback(table="tl_content_template_article", target="fields.alias.save")
-     */
+    #[AsCallback('tl_content_template_article', 'fields.alias.save')]
     public function onAliasSaveCallback($value, DataContainer $dc)
     {
         $aliasExists = (fn (string $alias): bool => $this->db->fetchOne('SELECT COUNT(id) FROM tl_article WHERE alias=? AND content_template_source!=?', [$alias, $dc->id]) > 0
@@ -55,29 +52,14 @@ class ContentTemplateArticleListener
         return $value;
     }
 
-    /**
-     * @Callback(table="tl_content_template_article", target="list.operations.editheader.button")
-     */
+    #[AsCallback('tl_content_template_article', 'list.operations.editheader.button')]
     public function onListOperationsEditButtonCallback(array $row, string|null $href, string $label, string $title, string|null $icon, string $attributes): string
     {
-        $user = $this->getUser();
-
-        if (method_exists($user, 'canEditFieldsOf')) {
-            if (!$user->canEditFieldsOf('tl_content_template_article')) {
-                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
-            }
-        } else {
-            if (!$this->security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_content_template_article')) {
-                return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
-            }
+        if (!$this->authChecker->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_content_template_article')) {
+            return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
         }
 
         return $this->getButton($row, $href, $label, $title, $icon, $attributes);
-    }
-
-    private function getUser(): BackendUser
-    {
-        return $this->security->getUser();
     }
 
     private function getButton(array $row, string|null $href, string $label, string $title, string|null $icon, string $attributes): string

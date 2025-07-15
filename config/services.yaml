@@ -8,9 +8,4 @@ services:
     
     InspiredMinds\ContaoContentTemplates\:
         resource: ../src
-        exclude: ../src/{ContaoManager,Event,Model,Resources}
-
-    InspiredMinds\ContaoContentTemplates\Controller\:
-        resource: ../src/Controller
-        exclude: ../src/{ContentElement,FrontendModule}
-        tags: ['controller.service_arguments']
+        exclude: ../src/{ContaoManager,DependencyInjection,Event,Model}

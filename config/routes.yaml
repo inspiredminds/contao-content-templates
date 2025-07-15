@@ -1,3 +1,0 @@
-contao_content_template.controller:
-    resource: ../src/Controller
-    type: annotation

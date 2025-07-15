@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
@@ -23,9 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Callback(table="tl_page", target="config.onload")
- */
+#[AsCallback('tl_page', 'config.onload')]
 class AdjustPageOperationsListener
 {
     public function __construct(

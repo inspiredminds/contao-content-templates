@@ -11,4 +11,4 @@ $GLOBALS['TL_DCA']['tl_page']['list']['global_operations'] = [
         'href' => 'apply_content_template',
         'icon' => 'article.svg',
     ],
-] + $GLOBALS['TL_DCA']['tl_page']['list']['global_operations'];
+] + ($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'] ?? []);

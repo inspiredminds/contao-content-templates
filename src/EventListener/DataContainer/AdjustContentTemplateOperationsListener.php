@@ -8,14 +8,12 @@ declare(strict_types=1);
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Picker\PickerConfig;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * @Callback(table="tl_content_template", target="config.onload")
- */
+#[AsCallback('tl_content_template', 'config.onload')]
 class AdjustContentTemplateOperationsListener
 {
     public function __construct(private readonly RequestStack $requestStack)

@@ -12,17 +12,15 @@ declare(strict_types=1);
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use InspiredMinds\ContaoContentTemplates\Controller\CreateContentTemplateFromPageController;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Callback(table="tl_content_template", target="config.onload")
- */
+#[AsCallback('tl_content_template', 'config.onload')]
 class AdjustContentTemplateGlobalOperationsListener
 {
     public function __construct(

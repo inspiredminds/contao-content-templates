@@ -16,15 +16,12 @@ use InspiredMinds\ContaoContentTemplates\ContentTemplateManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @Route("/contao/_apply_content_template/{pageId}/{templateId}",
- *   name=ApplyContentTemplateController::class,
- *   defaults={"_scope": "backend"}
- * )
- */
+#[AsController]
+#[Route(path: '/contao/_apply_content_template/{pageId}/{templateId}', name: self::class, defaults: ['_scope' => 'backend'])]
 class ApplyContentTemplateController
 {
     public function __construct(
