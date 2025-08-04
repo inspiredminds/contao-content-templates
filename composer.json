@@ -30,7 +30,6 @@
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.3",
         "symfony/http-foundation": "^5.4 || ^6.4 || ^7.3",
         "symfony/http-kernel": "^5.4 || ^6.4 || ^7.3",
-        "symfony/polyfill-php80": "^1.26",
         "symfony/routing": "^5.4 || ^6.4 || ^7.3",
         "symfony/security-core": "^5.4 || ^6.4 || ^7.3",
         "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0"
