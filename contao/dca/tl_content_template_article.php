@@ -7,6 +7,7 @@ declare(strict_types=1);
  */
 
 use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\Image;
 
 Controller::loadDataContainer('tl_article');
@@ -59,4 +60,10 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
 ];
 
 // Added via loadDataContainer
-unset($GLOBALS['TL_DCA']['tl_content_template_article']['config']['ondelete_callback'], $GLOBALS['TL_DCA']['tl_content_template_article']['fields']['inColumn']);
+unset($GLOBALS['TL_DCA']['tl_content_template_article']['config']['ondelete_callback']);
+
+// Remove inColumn for now
+PaletteManipulator::create()
+    ->removeField('inColumn')
+    ->applyToPalette('default', 'tl_content_template_article')
+;
