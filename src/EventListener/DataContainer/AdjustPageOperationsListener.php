@@ -3,18 +3,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Contao Content Templates extension.
- *
- * (c) inspiredminds
- *
- * @license LGPL-3.0-or-later
+ * (c) INSPIRED MINDS
  */
 
 namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
-use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
 use Contao\StringUtil;
@@ -34,7 +29,7 @@ class AdjustPageOperationsListener
     ) {
     }
 
-    public function __invoke(DataContainer $dc): void
+    public function __invoke(): void
     {
         if (null === Input::get('apply_content_template')) {
             return;
@@ -43,6 +38,7 @@ class AdjustPageOperationsListener
         // Show "apply" button
         $GLOBALS['TL_DCA']['tl_page']['list']['operations'] = [
             'apply_content_template' => [
+                'label' => $this->translator->trans('tl_page.apply_content_template', [], 'contao_tl_page'),
                 'icon' => 'pasteinto.svg',
                 'button_callback' => function (array $row, string|null $href, string $label, string $title, string $icon, string $attributes): string {
                     if ('regular' !== $row['type']) {
@@ -56,7 +52,7 @@ class AdjustPageOperationsListener
                         'source' => 'tl_page.'.$row['id'],
                     ]);
 
-                    return '<a class="content-templates-modal" href="'.$href.'" title="'.StringUtil::specialchars($title).'"'.$attributes.' data-apply="'.$applyUrl.'" data-title="'.$this->translator->trans('Choose a content template').'">'.Image::getHtml($icon, $label).'</a> ';
+                    return '<button type="button" class="content-templates-modal" data-href="'.$href.'" title="'.StringUtil::specialchars($title).'"'.$attributes.' data-apply="'.$applyUrl.'" data-title="'.$this->translator->trans('Choose a content template').'">'.Image::getHtml($icon, $label).'</button> ';
                 },
             ],
         ];
@@ -68,7 +64,7 @@ class AdjustPageOperationsListener
         $GLOBALS['TL_DCA']['tl_page']['list']['global_operations'] = [
             'cancel_apply_content_template' => [
                 'label' => &$GLOBALS['TL_LANG']['MSC']['cancelBT'],
-                'class' => 'apply_content_template',
+                'class' => 'cancel_apply_content_template',
                 'icon' => 'clipboard.svg',
                 'button_callback' => function (string|null $href, string $label, string $title, string $class, string $attributes): string {
                     $href = $this->router->generate('contao_backend', [

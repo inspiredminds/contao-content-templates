@@ -16,7 +16,7 @@
             Backend.openModalSelector({
                 "id": "tl_listing",
                 "title": element.dataset.title,
-                "url": element.href,
+                "url": element.dataset.href,
                 "callback": function(table, value) {
                     window.location = element.dataset.apply+'/'+value[0];
                 }
