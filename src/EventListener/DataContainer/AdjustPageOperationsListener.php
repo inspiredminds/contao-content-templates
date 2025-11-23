@@ -68,6 +68,7 @@ class AdjustPageOperationsListener
         $GLOBALS['TL_DCA']['tl_page']['list']['global_operations'] = [
             'cancel_apply_content_template' => [
                 'label' => &$GLOBALS['TL_LANG']['MSC']['cancelBT'],
+                'class' => 'apply_content_template',
                 'icon' => 'clipboard.svg',
                 'button_callback' => function (string|null $href, string $label, string $title, string $class, string $attributes): string {
                     $href = $this->router->generate('contao_backend', [

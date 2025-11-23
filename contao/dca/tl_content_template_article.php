@@ -59,4 +59,4 @@ $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
 ];
 
 // Added via loadDataContainer
-unset($GLOBALS['TL_DCA']['tl_content_template_article']['config']['ondelete_callback']);
+unset($GLOBALS['TL_DCA']['tl_content_template_article']['config']['ondelete_callback'], $GLOBALS['TL_DCA']['tl_content_template_article']['fields']['inColumn']);
