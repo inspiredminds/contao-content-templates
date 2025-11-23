@@ -6,6 +6,7 @@ declare(strict_types=1);
  * (c) INSPIRED MINDS
  */
 
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_content_template'] = [
@@ -35,7 +36,9 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
         ],
         'global_operations' => [
             'new_from_page' => [
+                'primary' => true,
                 'icon' => 'new.svg',
+                'attributes' => ' data-turbo-prefetch="false"',
                 'class' => 'content-templates-modal',
             ],
         ],
@@ -86,3 +89,12 @@ $GLOBALS['TL_DCA']['tl_content_template'] = [
         ],
     ],
 ];
+
+if ((explode('.', ContaoCoreBundle::getVersion())[0] ?? '') >= 5) {
+    $GLOBALS['TL_DCA']['tl_content_template']['list']['operations'] = [
+        'edit',
+        'children',
+        'delete',
+        'show',
+    ];
+}
