@@ -1,3 +1,6 @@
+[![](https://img.shields.io/packagist/v/inspiredminds/contao-content-templates.svg)](https://packagist.org/packages/inspiredminds/contao-content-templates)
+[![](https://img.shields.io/packagist/dt/inspiredminds/contao-content-templates.svg)](https://packagist.org/packages/inspiredminds/contao-content-templates)
+
 Contao Content Templates
 ========================
 
