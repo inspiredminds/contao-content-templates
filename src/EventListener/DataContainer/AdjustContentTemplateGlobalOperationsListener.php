@@ -10,8 +10,8 @@ namespace InspiredMinds\ContaoContentTemplates\EventListener\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
+use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
-use Contao\StringUtil;
 use InspiredMinds\ContaoContentTemplates\Controller\CreateContentTemplateFromPageController;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -44,7 +44,13 @@ class AdjustContentTemplateGlobalOperationsListener
                 'fieldType' => 'radio',
             ]);
 
-            return '<a href="'.$href.'" class="'.$class.'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ';
+            $attributes = (new HtmlAttributes($attributes))
+                ->set('type', 'button')
+                ->set('data-href', $href)
+                ->addClass($class)
+            ;
+
+            return \sprintf('<button%s>%s</button>', (string) $attributes, $label);
         };
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaocontenttemplates/content-templates-modal.js|async';
