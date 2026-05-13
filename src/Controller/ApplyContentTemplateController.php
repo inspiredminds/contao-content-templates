@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace InspiredMinds\ContaoContentTemplates\Controller;
 
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use InspiredMinds\ContaoContentTemplates\ContentTemplateManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ class ApplyContentTemplateController
     public function __construct(
         private readonly RouterInterface $router,
         private readonly ContentTemplateManager $manager,
+        private readonly ContaoCsrfTokenManager $tokenManager,
     ) {
     }
 
@@ -38,6 +40,7 @@ class ApplyContentTemplateController
                 'do' => 'article',
                 'pn' => $pageId,
                 'ref' => $request->attributes->get('_contao_referer_id'),
+                'rt' => $this->tokenManager->getDefaultTokenValue(),
             ],
             RouterInterface::ABSOLUTE_PATH,
         );
