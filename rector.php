@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 use Contao\Rector\Set\SetList;
 use Rector\Config\RectorConfig;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 
 return RectorConfig::configure()
     ->withSets([SetList::CONTAO])
@@ -17,9 +16,6 @@ return RectorConfig::configure()
         __DIR__.'/src',
         __DIR__.'/ecs.php',
         __DIR__.'/rector.php',
-    ])
-    ->withSkip([
-        FirstClassCallableRector::class,
     ])
     ->withParallel()
     ->withCache(sys_get_temp_dir().'/rector_cache')

@@ -18,10 +18,10 @@ $GLOBALS['TL_DCA']['tl_content_template_article'] = $GLOBALS['TL_DCA']['tl_artic
 // Set the ptable
 $GLOBALS['TL_DCA']['tl_content_template_article']['config']['ptable'] = 'tl_content_template';
 
-// Remove toggle icons
+// Remove operations
 unset(
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['global_operations']['toggleNodes'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['toggle'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['global_operations'],
+    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations'],
 );
 
 // Only allow core callbacks (without tl_article::checkPermission)
@@ -41,14 +41,6 @@ foreach ($GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_cal
 }
 
 $GLOBALS['TL_DCA']['tl_content_template_article']['config']['onload_callback'] = $callbacks;
-
-// Unset some callbacks (no permission check)
-unset(
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['edit']['button_callback'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['copy']['button_callback'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['cut']['button_callback'],
-    $GLOBALS['TL_DCA']['tl_content_template_article']['list']['operations']['delete']['button_callback'],
-);
 
 // Configure list sorting
 $GLOBALS['TL_DCA']['tl_content_template_article']['list']['sorting'] = [
